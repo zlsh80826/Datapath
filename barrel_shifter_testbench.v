@@ -17,7 +17,7 @@ module BarrelShifterTest;
 
         # 5 
         B = 16'b1101_0000_0000_0000;
-        SA = 4'b0001;
+        SA = 4'b1111;
 
         SS = 3'b000;
         # 5

@@ -10,7 +10,8 @@ module BarrelShifter ( input [2:0] ShiftSelect,
                       ( ShiftSelect == 3'b001 ) ? ( OriginB << ShifterAmount ) :
                       ( ShiftSelect == 3'b010 ) ? ( ( OriginB >> ShifterAmount ) | ( OriginB << (16 - ShifterAmount) ) ) :
                       ( ShiftSelect == 3'b011 ) ? ( ( OriginB << ShifterAmount ) | ( OriginB >> (16 - ShifterAmount) ) ) :
-                      ( ShiftSelect == 3'b100 ) ? ( ( OriginB >> ShifterAmount ) | (16'b1000_0000_0000_0000 & OriginB) ) : UNDEFINE;
+                      ( ShiftSelect == 3'b100 && (OriginB[15] == 1) ) ? ( ( OriginB >> ShifterAmount ) | ( (16'b1111_1111_1111_1111) << (16 - ShifterAmount) ) ) : 
+                      ( ShiftSelect == 3'b100 && (OriginB[15] == 0) ) ? ( OriginB >> ShifterAmount ) : UNDEFINE;
     
 
 endmodule
