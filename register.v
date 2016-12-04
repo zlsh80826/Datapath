@@ -1,13 +1,21 @@
-module RegisterFile (index, val, clk);
-	input [2:0] index;
-	input clk;
-	output [7:0] val;
-	reg [7:0] val;
+module RegisterFile (
+	input [15:0] DData,
+	input [2:0] AAddress,
+	input [2:0] BAddress,
+	input [2:0] DAddress,
+	input ReadOrWrite,
+	output reg [15:0] AData,
+	output reg [15:0] BData);
 
-	reg [7:0] register [0:15];
+	reg [7:0] register [15:0];
 
-	always @ (posedge clk) begin
-		val = register[index];
+	always @ (*) begin
+		if ( ReadOrWrite == 1'b0 ) begin
+			AData <= register[AAddress];
+			BData <= register[BAddress];
+		end else begin
+			register[DAddress] <= DData;
+		end
 	end
 
 endmodule
