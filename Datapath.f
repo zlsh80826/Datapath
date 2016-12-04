@@ -1,3 +1,4 @@
+datapath_testbench.v
 top.v
 register_file.v
 multiplexer.v
