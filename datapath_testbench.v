@@ -13,7 +13,7 @@ module DatapathSimulation;
     end
 
     initial begin
-        file = $fopen("test_pattern.dat", "r");
+        file = $fopen("pattern.dat", "r");
         
         while( !$feof(file) ) begin
             # 10
