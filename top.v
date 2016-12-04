@@ -1,19 +1,40 @@
-module top ( input [54:0] ControlWord,
-			 input Clock);
+module top ( input [54:0] ControlWord );
 
-	wire [15:0] Data;
-	wire [15:0] A;
-	wire [15:0] B;
+	wire [15:0] DData;
+	wire [15:0] AData;
+	wire [15:0] BData, SelectedB, ShiftedB;
+	wire [15:0] ALUResult;
+	wire Overflow, CarryOut, Negative, Zero;
 
-	RegisterFile D_reg ( DA, Data, Clock );
+	RegisterFile registerFile ( DData,
+				   				ControlWord[51:49],
+				   				ControlWord[48:46],
+				   				ControlWord[54:52],
+				   				ControlWord[32],
+								AData,
+								BData );
 
-	RegisterFile A_reg ( AA, A, Clock );
+	Multiplexer multiplexerB ( BData,
+							   ControlWord[31:16],
+							   ControlWord[45],
+							   SelectedB );
+	
+	BarrelShifter barrelShifter ( ControlWord[40:38],
+								  ControlWord[37:34],
+								  SelectedB,
+								  ShiftedB );
+	
+	FunctionUnit functionUnit ( AData,
+								ShiftedB,
+								ALUResult,
+								ControlWord[44:41],
+								Overflow,
+								CarrOut,
+								Negative,
+								Zero );
 
-	RegisterFile B_reg ( BA, B, Clock );
-
-
-
-
-
-
+	Multiplexer multiplexerD ( ALUResult,
+							   ControlWord[15:0],
+							   ControlWord[33],
+							   DDate );
 endmodule
