@@ -6,8 +6,9 @@ module DatapathSimulation;
     integer file, status, i, out;
     wire [15:0] r0, r1, r2, r3, r4, r5, r6, r7, A, B;
     wire V, C, N, Z;
+    reg clk;
 
-    top datapath ( ControlWord, V, C, N, Z, r0, r1, r2, r3, r4, r5, r6, r7, A, B);
+    top datapath ( ControlWord, V, C, N, Z, r0, r1, r2, r3, r4, r5, r6, r7, A, B, clk);
 
     assign ControlWord = temp;
 
@@ -16,13 +17,17 @@ module DatapathSimulation;
         $fsdbDumpvars;
     end
 
+    always #5 clk = ~clk;
+
     initial begin
         file = $fopen("pattern.dat", "r");
         out = $fopen("output.txt", "w");
-        #2
+        i = 1;
+        clk = 0;
+        #3
         while( !$feof(file) ) begin
             status = $fscanf(file, "%b", temp);
-            #5
+            #10
             $fwrite(out, "%b_%b_%b_%b_%b_%b_%b_%b_%b_%b_%b_%b_%b_%b\n", V, C, N, Z,
             r0, r1, r2, r3, r4, r5, r6, r7, A, B);
             i = i + 1;

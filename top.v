@@ -12,16 +12,12 @@ module top ( input [54:0] ControlWord,
              output [15:0] r6,
              output [15:0] r7,
              output [15:0] AData,
-             output [15:0] ShiftedB);
+             output [15:0] ShiftedB,
+             input clk);
 
     wire [15:0] DData;
     wire [15:0] BData, SelectedB;
     wire [15:0] ALUResult;
-
-    Multiplexer multiplexerD ( ALUResult,
-                               ControlWord[15:0],
-                               ControlWord[33],
-                               DData );
 
     RegisterFile registerFile ( DData,
                                 ControlWord[51:49],
@@ -37,7 +33,8 @@ module top ( input [54:0] ControlWord,
                                 r4,
                                 r5,
                                 r6,
-                                r7);
+                                r7,
+                                clk );
 
     Multiplexer multiplexerB ( BData,
                                ControlWord[31:16],
@@ -57,5 +54,10 @@ module top ( input [54:0] ControlWord,
                                 CarryOut,
                                 Negative,
                                 Zero);
+
+    Multiplexer multiplexerD ( ALUResult,
+                               ControlWord[15:0],
+                               ControlWord[33],
+                               DData );
 
 endmodule

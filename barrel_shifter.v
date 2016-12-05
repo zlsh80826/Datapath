@@ -13,5 +13,8 @@ module BarrelShifter ( input [2:0] ShiftSelect,
                       ( ShiftSelect == 3'b100 && (OriginB[15] == 1) ) ? ( ( OriginB >> ShifterAmount ) | ( (16'b1111_1111_1111_1111) << (16 - ShifterAmount) ) ) : 
                       ( ShiftSelect == 3'b100 && (OriginB[15] == 0) ) ? ( OriginB >> ShifterAmount ) : UNDEFINE;
     
+    /*always@(*) begin
+        $display("%b %b", OriginB, ShiftedB);
+    end*/
 
 endmodule

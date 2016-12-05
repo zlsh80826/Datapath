@@ -27,22 +27,27 @@ module FunctionUnit ( input  [15:0] A,
                                 (FunctionSelect == 4'b1011) ? (~A) :
                                 (FunctionSelect == 4'b1100) ? (tempB) : UNDEFINE;
     
-    assign Overflow =           (FunctionSelect == 4'b0001) ? () :
-                                (FunctionSelect == 4'b0010) ? (A + tempB) :
-                                (FunctionSelect == 4'b0011) ? (A + tempB + 16'b1) :
-                                (FunctionSelect == 4'b0100) ? (A + tempB) :
-                                (FunctionSelect == 4'b0101) ? (A + tempB + 16'b1) :
-                                (FunctionSelect == 4'b0110) ? (A + 17'b1111_1111_1111_1111_1) :
+    assign Overflow =           (FunctionSelect == 4'b0001) ? overflow(A, 16'b1, Result) :
+                                (FunctionSelect == 4'b0010) ? overflow(A, tempB, Result) :
+                                (FunctionSelect == 4'b0011) ? overflow(A, tempB, Result) :
+                                (FunctionSelect == 4'b0100) ? overflow(A, tempB, Result) :
+                                (FunctionSelect == 4'b0101) ? overflow(A, tempB, Result) :               
+                                (FunctionSelect == 4'b0110) ? overflow(A, 16'b1111_1111_1111_1111, Result) :
+                                0;
+
     assign Negative = (Result[15] == 1);
     assign Zero = (Result == 16'b0000_0000_0000_0000);
 
-    function overflow 
-        input [15:0] a, b;
+    function overflow; 
+        input [15:0] a, b, result;
         begin
-            
+            overflow = ( (a[15] == 0) && (b[15] == 0) && (result[15] == 1) ) |
+                       ( (a[15] == 1) && (b[15] == 1) && (result[15] == 0) );
         end
     endfunction
 
-
+    always@(A, B) begin
+//        $display("%b %b", A, B);
+    end 
 
 endmodule 
