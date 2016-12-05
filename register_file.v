@@ -18,7 +18,7 @@ module RegisterFile (
 
     reg [15:0] register [7:0];
 
-    always @(posedge clk) begin
+    always @(*) begin
         AData = register[AAddress];
         BData = register[BAddress];
         /*if ( ReadOrWrite == 1'b1 ) begin
@@ -26,9 +26,10 @@ module RegisterFile (
         end*/
     end
 
-    always @(*) begin
+    always @(posedge clk) begin
         if ( ReadOrWrite == 1'b1 ) begin
             register[DAddress] = DData;
+            $display("Time %3d Write %b into %b", $time, DData, DAddress);
         end
     end
 

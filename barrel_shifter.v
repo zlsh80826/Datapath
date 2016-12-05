@@ -1,4 +1,3 @@
-`timescale 1ns/100ps
 module BarrelShifter ( input [2:0] ShiftSelect,
                        input [3:0] ShifterAmount,
                        input [15:0] OriginB,

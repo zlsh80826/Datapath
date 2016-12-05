@@ -9,12 +9,13 @@ module FunctionUnit ( input  [15:0] A,
     
     parameter UNDEFINE = 16'b0000_0000_0000_0000;   
 
-    wire [15:0] tempB;
+    wire [15:0] tempB, inverseA;
     assign tempB = ( FunctionSelect == 4'b0100 || FunctionSelect == 4'b0101 ) ? ~B
                                                                               :  B;
 
+    assign inverseA = ~A;
     assign {CarryOut, Result} = (FunctionSelect == 4'b0000) ? (A) :
-                                (FunctionSelect == 4'b0001) ? (A + 16'b1) :
+                                (FunctionSelect == 4'b0001) ? (A + 1) :
                                 (FunctionSelect == 4'b0010) ? (A + tempB) :
                                 (FunctionSelect == 4'b0011) ? (A + tempB + 16'b1) :
                                 (FunctionSelect == 4'b0100) ? (A + tempB) :
@@ -24,7 +25,7 @@ module FunctionUnit ( input  [15:0] A,
                                 (FunctionSelect == 4'b1000) ? (A & tempB) :
                                 (FunctionSelect == 4'b1001) ? (A | tempB) :
                                 (FunctionSelect == 4'b1010) ? (A ^ tempB) :
-                                (FunctionSelect == 4'b1011) ? (~A) :
+                                (FunctionSelect == 4'b1011) ? (inverseA) :
                                 (FunctionSelect == 4'b1100) ? (tempB) : UNDEFINE;
     
     assign Overflow =           (FunctionSelect == 4'b0001) ? overflow(A, 16'b1, Result) :
@@ -46,8 +47,8 @@ module FunctionUnit ( input  [15:0] A,
         end
     endfunction
 
-    always@(A, B) begin
-//        $display("%b %b", A, B);
-    end 
+    /*always@(Result) begin
+        $display("%b", A);
+    end*/ 
 
 endmodule 
