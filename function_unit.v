@@ -9,18 +9,19 @@ module FunctionUnit ( input  [15:0] A,
     
     parameter UNDEFINE = 16'b0000_0000_0000_0000;   
 
-    wire [15:0] tempB, inverseA;
+    wire [15:0] tempB, inverseA, Aplus1;
     assign tempB = ( FunctionSelect == 4'b0100 || FunctionSelect == 4'b0101 ) ? ~B
                                                                               :  B;
 
     assign inverseA = ~A;
+    assign Aplus1 = A + 16'd1;
     assign {CarryOut, Result} = (FunctionSelect == 4'b0000) ? (A) :
-                                (FunctionSelect == 4'b0001) ? (A + 1) :
+                                (FunctionSelect == 4'b0001) ? (Aplus1) :
                                 (FunctionSelect == 4'b0010) ? (A + tempB) :
-                                (FunctionSelect == 4'b0011) ? (A + tempB + 16'b1) :
+                                (FunctionSelect == 4'b0011) ? (A + tempB + 16'd1) :
                                 (FunctionSelect == 4'b0100) ? (A + tempB) :
-                                (FunctionSelect == 4'b0101) ? (A + tempB + 16'b1) :
-                                (FunctionSelect == 4'b0110) ? (A + 17'b1111_1111_1111_1111_1) :
+                                (FunctionSelect == 4'b0101) ? (A + tempB + 16'd1) :
+                                (FunctionSelect == 4'b0110) ? (A - 16'd1) :
                                 (FunctionSelect == 4'b0111) ? (A) : 
                                 (FunctionSelect == 4'b1000) ? (A & tempB) :
                                 (FunctionSelect == 4'b1001) ? (A | tempB) :
@@ -28,7 +29,7 @@ module FunctionUnit ( input  [15:0] A,
                                 (FunctionSelect == 4'b1011) ? (inverseA) :
                                 (FunctionSelect == 4'b1100) ? (tempB) : UNDEFINE;
     
-    assign Overflow =           (FunctionSelect == 4'b0001) ? overflow(A, 16'b1, Result) :
+    assign Overflow =           (FunctionSelect == 4'b0001) ? overflow(A, 16'd1, Result) :
                                 (FunctionSelect == 4'b0010) ? overflow(A, tempB, Result) :
                                 (FunctionSelect == 4'b0011) ? overflow(A, tempB, Result) :
                                 (FunctionSelect == 4'b0100) ? overflow(A, tempB, Result) :
@@ -42,8 +43,8 @@ module FunctionUnit ( input  [15:0] A,
     function overflow; 
         input [15:0] a, b, result;
         begin
-            overflow = ( (a[15] == 0) && (b[15] == 0) && (result[15] == 1) ) |
-                       ( (a[15] == 1) && (b[15] == 1) && (result[15] == 0) );
+            overflow = ( (a[15] == 1'b0) && (b[15] == 1'b0) && (result[15] == 1'b1) ) |
+                       ( (a[15] == 1'b1) && (b[15] == 1'b1) && (result[15] == 1'b0) );
         end
     endfunction
 

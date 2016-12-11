@@ -18,6 +18,8 @@ module RegisterFile (
 
     reg [15:0] register [7:0];
 
+    integer i;
+
     always @(*) begin
         AData = register[AAddress];
         BData = register[BAddress];
@@ -28,8 +30,24 @@ module RegisterFile (
 
     always @(posedge clk) begin
         if ( ReadOrWrite == 1'b1 ) begin
-            register[DAddress] = DData;
+            for(i=0; i<8; i=i+1)
+                if(i==DAddress)
+                    register[i]<=DData;
+                else
+                    register[i] <= register[i];
+            
+            //register[DAddress] <= DData;
             $display("Time %3d Write %b into %b", $time, DData, DAddress);
+        end
+        else begin
+            register[0] <= register[0];
+            register[1] <= register[1];
+            register[2] <= register[2];
+            register[3] <= register[3];
+            register[4] <= register[4];
+            register[5] <= register[5];
+            register[6] <= register[6];
+            register[7] <= register[7];
         end
     end
 

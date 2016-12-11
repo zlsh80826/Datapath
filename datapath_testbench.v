@@ -13,21 +13,27 @@ module DatapathSimulation;
     assign ControlWord = temp;
 
     initial begin
-        $fsdbDumpfile("datapath.fsdb");
+        `ifdef SYNTHESIS
+            $sdf_annotate("datapath_syn.sdf", DatapathSimulation);
+            $fsdbDumpfile("syn.fsdb");
+        `else
+            $fsdbDumpfile("datapath.fsdb");
+        `endif
         $fsdbDumpvars;
     end
 
-    always #5 clk = ~clk;
+    always #15 clk = ~clk;
 
     initial begin
         file = $fopen("pattern.dat", "r");
         out = $fopen("output.txt", "w");
         i = 1;
-        clk = 0;
-        #3
+        clk = 0; 
+        #16
+        status = $fscanf(file, "%b", temp);
         while( !$feof(file) ) begin
+            #30
             status = $fscanf(file, "%b", temp);
-            #10
             $fwrite(out, "%b_%b_%b_%b_%b_%b_%b_%b_%b_%b_%b_%b_%b_%b\n", V, C, N, Z,
             r0, r1, r2, r3, r4, r5, r6, r7, A, B);
             i = i + 1;
